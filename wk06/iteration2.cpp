@@ -11,8 +11,13 @@
 #include "iteration2.hh"
 using namespace std;
 
+void printEverySecond(const list<int> &lst) {
+  bool isPrinted = true;
 
-void printEverySecond(const list<int>& lst)
-{
-    // ADD YOUR CODE HERE
+  for (auto it = lst.begin(); it != lst.end(); it++) {
+    if (isPrinted) cout << *it << " ";
+    isPrinted = !isPrinted;
+  }
+
+  cout << endl;
 }

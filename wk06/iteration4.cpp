@@ -11,8 +11,12 @@
 #include "iteration4.hh"
 using namespace std;
 
+void printReverse(const list<int> &lst) {
+  auto prevEnd = std::prev(lst.end());
+  auto prevBegin = std::prev(lst.begin());
 
-void printReverse(const list<int>& lst)
-{
-    // ADD YOUR CODE HERE
+  for (auto it = prevEnd; it != prevBegin; it--) {
+    cout << *it << " ";
+  }
+  cout << endl;
 }
