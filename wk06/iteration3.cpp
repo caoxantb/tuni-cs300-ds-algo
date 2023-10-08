@@ -11,8 +11,12 @@
 #include "iteration3.hh"
 using namespace std;
 
-
-void printHalf(const list<int>& lst)
-{
-    // ADD YOUR CODE HERE
+void printHalf(const list<int> &lst) {
+  auto it = lst.begin();
+  
+  for (int i = 0; i < lst.size()/2; i++) {
+    cout << *it << " ";
+    it++;
+  }
+  cout << endl;
 }
