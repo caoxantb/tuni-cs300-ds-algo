@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 /**
  * @brief Return an iterator which points to the first instance of the given value
  *        If the value is not found, return v.end()
@@ -14,7 +13,7 @@ using namespace std;
  * @param given the value to be searched
  * @return std::vector<int>::iterator iterator to the found value
  */
-std::vector<int>::iterator findGivenValue(std::vector<int>& v, int given)
-{
+std::vector<int>::iterator findGivenValue(std::vector<int> &v, int given) {
+  auto it = std::find(v.begin(), v.end(), given);
+  return it;
 }
-
