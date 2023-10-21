@@ -16,11 +16,11 @@ using namespace std;
  * @return int the real found value
  */
 int findAtLeastGiven(std::map<std::string, int>& m, int given) {
-  auto it = std::find_if(m.begin(), m.end(), [given](const std::pair<int, int>& pair) {
+  auto it = std::find_if(m.begin(), m.end(), [given](const std::pair<std::string, int>& pair) {
     return pair.second >= given;
   });
 
   if (it != m.end()) return (*it).second;
-  else return NOT_FOUND;
+  return NOT_FOUND;
 }
 
