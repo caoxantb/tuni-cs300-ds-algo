@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <random>
 
-
 //---- Some utilities
 using iter = std::vector<int>::iterator;
 using RNG = std::default_random_engine;
@@ -20,15 +19,21 @@ using RNG = std::default_random_engine;
  * @param end an iterator that points to the end part of the sequence where the quicksort is performed
  * @param rng the random number generator that can be used
  */
-void randomizedThreePartQuicksort(iter begin, iter end, RNG& rng)
-{
-    if (begin == end) return;
-    std::shuffle(begin, end, rng);
-    auto pivot = *(begin + (end - begin)/2);
-    iter middle1 = std::partition(begin, end,
-        [pivot](int val){ return val < pivot; });
-    iter middle2 = std::partition(middle1, end,
-        [pivot](int val){ return !(pivot < val); });
-    randomizedThreePartQuicksort(begin, middle1, rng);
-    randomizedThreePartQuicksort(middle2, end, rng);
+void randomizedThreePartQuicksort(iter begin, iter end, RNG &rng) {
+  if (begin == end)
+    return;
+    
+  std::uniform_int_distribution<std::size_t> dist(0, std::distance(begin, end) - 1);
+  auto random_pivot_index = dist(rng);
+  std::iter_swap(begin + random_pivot_index, end - 1);
+  auto pivot = *(end - 1);
+
+  iter middle1 = std::partition(begin, end,
+                                [pivot](int val)
+                                { return val < pivot; });
+  iter middle2 = std::partition(middle1, end,
+                                [pivot](int val)
+                                { return !(pivot < val); });
+  randomizedThreePartQuicksort(begin, middle1, rng);
+  randomizedThreePartQuicksort(middle2, end, rng);
 }
