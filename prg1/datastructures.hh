@@ -64,9 +64,9 @@ struct CoordHash
 // as key for std::map/set
 inline bool operator<(Coord c1, Coord c2)
 {
-    double dist_a = std::hypot(c1.x, c1.y);
-    double dist_b = std::hypot(c2.x, c2.y);
-    return dist_a == dist_b ? c1.y < c2.y : dist_a < dist_b;
+    double dist_a_sq = (c1.x * c1.x) + (c1.y * c1.y);
+    double dist_b_sq = (c2.x * c2.x) + (c2.y * c2.y);
+    return dist_a_sq == dist_b_sq ? c1.y < c2.y : dist_a_sq < dist_b_sq;
 }
 
 // Return value for cases where coordinates were not found
