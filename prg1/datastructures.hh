@@ -14,6 +14,8 @@
 #include <limits>
 #include <functional>
 #include <exception>
+#include <map>
+#include <set>
 
 // Types for IDs
 using AffiliationID = std::string;
@@ -62,9 +64,9 @@ struct CoordHash
 // as key for std::map/set
 inline bool operator<(Coord c1, Coord c2)
 {
-    if (c1.y < c2.y) { return true; }
-    else if (c2.y < c1.y) { return false; }
-    else { return c1.x < c2.x; }
+    double dist_a = std::hypot(c1.x, c1.y);
+    double dist_b = std::hypot(c2.x, c2.y);
+    return dist_a == dist_b ? c1.y < c2.y : dist_a < dist_b;
 }
 
 // Return value for cases where coordinates were not found
@@ -216,7 +218,28 @@ public:
 
 
 private:
-
+    struct Affiliation {
+      AffiliationID id;
+      Name name;
+      Coord xy;
+      std::vector<PublicationID> publications;
+    };
+    struct Publication {
+      PublicationID id;
+      Name name;
+      Year year;
+      std::vector<AffiliationID> affiliations;
+      PublicationID parent_id;
+      std::vector<PublicationID> children_ids;
+    };
+    std::unordered_map<AffiliationID, Affiliation> affiliations_map;
+    std::unordered_map<PublicationID, Publication> publications_map;
+    std::map<Name, std::set<AffiliationID>> affiliations_map_sorted_name;
+    std::vector<AffiliationID> affiliations_id_sorted_name;
+    std::map<Coord, AffiliationID> affiliations_map_sorted_coord;
+    std::vector<AffiliationID> affiliations_id_sorted_coord;
+    bool affiliations_name_sorted = true;
+    bool affiliations_coord_sorted = true;
 };
 
 #endif // DATASTRUCTURES_HH
