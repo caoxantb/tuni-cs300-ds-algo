@@ -116,11 +116,12 @@ public:
     // Short rationale for estimate: std::map::find and insert are logarithmic
     bool add_affiliation(AffiliationID id, Name const& name, Coord xy);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::unordered_map::find is constant but
+    // in hash collision case then it would be linear
     Name get_affiliation_name(AffiliationID id);
 
-    // Estimate of performance: O(1)
+    // Estimate of performance: O(n)
     // Short rationale for estimate: std::unordered_map::find is constant
     Coord get_affiliation_coord(AffiliationID id);
 
@@ -148,8 +149,9 @@ public:
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::unordered_map::insert is constant but
+    // in hash collision case then it would be linear
     bool add_publication(PublicationID id, Name const& name, Year year, const std::vector<AffiliationID> & affiliations);
 
     // Estimate of performance: O(n)
@@ -165,26 +167,29 @@ public:
     // Short rationale for estimate: std::unordered_map::find is constant
     Year get_publication_year(PublicationID id);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::unordered_map::find is constant but
+    // in hash collision case then it would be linear
     std::vector<AffiliationID> get_affiliations(PublicationID id);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find 
-    // and std::vector::push_back are constant
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::unordered_map::find is constant but
+    // in hash collision case then it would be linear
     bool add_reference(PublicationID id, PublicationID parentid);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::unordered_map::find is constant but
+    // in hash collision case then it would be linear
     std::vector<PublicationID> get_direct_references(PublicationID id);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find 
-    // and std::vector::push_back are constant
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::unordered_map::find is constant but
+    // in hash collision case then it would be linear
     bool add_affiliation_to_publication(AffiliationID affiliationid, PublicationID publicationid);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::unordered_map::find is constant but
+    // in hash collision case then it would be linear
     std::vector<PublicationID> get_publications(AffiliationID id);
 
     // Estimate of performance: O(1)
