@@ -99,98 +99,105 @@ public:
     Datastructures();
     ~Datastructures();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::vector::size is constant
     unsigned int get_affiliation_count();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::vector::clear is linear 
     void clear_all();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::vector::push_back is constant once
+    // reserved adequate memories and called n times
     std::vector<AffiliationID> get_all_affiliations();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(log(n))
+    // Short rationale for estimate: std::map::find and insert are logarithmic
     bool add_affiliation(AffiliationID id, Name const& name, Coord xy);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     Name get_affiliation_name(AffiliationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     Coord get_affiliation_coord(AffiliationID id);
 
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::vector::push_back is constant once
+    // reserved adequate memories and called n times running a for loop of n through a map
     std::vector<AffiliationID> get_affiliations_alphabetically();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::vector::push_back is constant once
+    // reserved adequate memories and called n times running a for loop of n through a map
     std::vector<AffiliationID> get_affiliations_distance_increasing();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(log(n))
+    // Short rationale for estimate: std::map::find are logarithmic
     AffiliationID find_affiliation_with_coord(Coord xy);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(log(n))
+    // Short rationale for estimate: std::map::find are logarithmic
     bool change_affiliation_coord(AffiliationID id, Coord newcoord);
 
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     bool add_publication(PublicationID id, Name const& name, Year year, const std::vector<AffiliationID> & affiliations);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: std::vector::push_back is constant once
+    // reserved adequate memories and called n times
     std::vector<PublicationID> all_publications();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     Name get_publication_name(PublicationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     Year get_publication_year(PublicationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     std::vector<AffiliationID> get_affiliations(PublicationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find 
+    // and std::vector::push_back are constant
     bool add_reference(PublicationID id, PublicationID parentid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     std::vector<PublicationID> get_direct_references(PublicationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find 
+    // and std::vector::push_back are constant
     bool add_affiliation_to_publication(AffiliationID affiliationid, PublicationID publicationid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     std::vector<PublicationID> get_publications(AffiliationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: std::unordered_map::find is constant
     PublicationID get_parent(PublicationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(nlog(n))
+    // Short rationale for estimate: std::map::find and insert are logarithmic 
+    // and run n times, therefore linearithmic
     std::vector<std::pair<Year, PublicationID>> get_publications_after(AffiliationID affiliationid, Year year);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: while loop until finding the root node is linear at worst
     std::vector<PublicationID> get_referenced_by_chain(PublicationID id);
 
 
