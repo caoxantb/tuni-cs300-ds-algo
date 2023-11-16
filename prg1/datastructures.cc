@@ -403,10 +403,34 @@ std::vector<AffiliationID> Datastructures::get_affiliations_closest_to(Coord xy)
   return closest_affs;
 }
 
-bool Datastructures::remove_affiliation(AffiliationID /*id*/)
+bool Datastructures::remove_affiliation(AffiliationID id)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("remove_affiliation()");
+  auto it = affiliations_map.find(id);
+  if (it == affiliations_map.end()) return false;
+
+  Name name_to_delete= it->second.name;
+  auto it_name = affiliations_map_sorted_name.find(name_to_delete);
+  it_name->second.erase(id);
+  if (it_name->second.size() == 0) affiliations_map_sorted_name.erase(it_name);
+
+  Coord coord_to_delete = it->second.xy;
+  auto it_coord = affiliations_map_sorted_coord.find(coord_to_delete);
+  affiliations_map_sorted_coord.erase(it_coord);
+
+  std::vector<PublicationID> publication_to_deattach = it->second.publications;
+  for (const PublicationID &id_pub : publication_to_deattach) {
+    auto it_pub = publications_map.find(id_pub);
+    std::vector<AffiliationID> affiliations_vect = it_pub->second.affiliations;
+    auto it_aff_to_del = std::find(affiliations_vect.begin(), affiliations_vect.end(), id);
+    affiliations_vect.erase(it_aff_to_del);
+    affiliations_vect.shrink_to_fit();
+  }
+
+  affiliations_name_sorted = false;
+  affiliations_coord_sorted = false;
+  affiliations_map.erase(it);
+
+  return true;
 }
 
 PublicationID Datastructures::get_closest_common_parent(PublicationID id1, PublicationID id2)
