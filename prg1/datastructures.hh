@@ -228,6 +228,9 @@ public:
     // Short rationale for estimate:
     bool remove_publication(PublicationID publicationid);
 
+    // Helper functions
+    void postorder_traversal(PublicationID root_id, std::vector<PublicationID> &store, bool isOriginalRoot);
+
 
 private:
     struct Affiliation {

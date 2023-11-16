@@ -335,10 +335,28 @@ std::vector<PublicationID> Datastructures::get_referenced_by_chain(PublicationID
   return {NO_PUBLICATION};
 }
 
-std::vector<PublicationID> Datastructures::get_all_references(PublicationID /*id*/)
+std::vector<PublicationID> Datastructures::get_all_references(PublicationID id)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_all_references()");
+  auto it = publications_map.find(id);
+  if (it == publications_map.end())
+  {
+    return {NO_PUBLICATION};
+  }
+  std::vector<PublicationID> store;
+  store.reserve(publications_map.size());
+  postorder_traversal(id, store, true);
+  store.shrink_to_fit();
+  return store;
+}
+
+void Datastructures::postorder_traversal(PublicationID root_id, std::vector<PublicationID> &store, bool isOriginalRoot)
+{
+  auto it = publications_map.find(root_id);
+  for (const PublicationID &id : it->second.children_ids)
+  {
+    postorder_traversal(id, store, false);
+  }
+  if (!isOriginalRoot) store.push_back(root_id);
 }
 
 std::vector<AffiliationID> Datastructures::get_affiliations_closest_to(Coord /*xy*/)
