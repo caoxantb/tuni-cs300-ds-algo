@@ -9,6 +9,7 @@
 #include <random>
 
 #include <cmath>
+#include <climits>
 
 std::minstd_rand rand_engine; // Reasonably quick pseudo-random generator
 
@@ -155,7 +156,6 @@ bool Datastructures::change_affiliation_coord(AffiliationID id, Coord newcoord)
     return false;
   }
 
-  auto it_coord = affiliations_map_sorted_coord.find(it->second.xy);
   affiliations_map_sorted_coord.erase(it->second.xy);
   affiliations_map_sorted_coord[newcoord] = id;
   affiliations_coord_sorted = false;
