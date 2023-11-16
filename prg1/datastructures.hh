@@ -16,6 +16,7 @@
 #include <exception>
 #include <map>
 #include <set>
+#include <unordered_set>
 
 // Types for IDs
 using AffiliationID = std::string;

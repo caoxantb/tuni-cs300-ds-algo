@@ -356,13 +356,51 @@ void Datastructures::postorder_traversal(PublicationID root_id, std::vector<Publ
   {
     postorder_traversal(id, store, false);
   }
-  if (!isOriginalRoot) store.push_back(root_id);
+  if (!isOriginalRoot)
+    store.push_back(root_id);
 }
 
-std::vector<AffiliationID> Datastructures::get_affiliations_closest_to(Coord /*xy*/)
+std::vector<AffiliationID> Datastructures::get_affiliations_closest_to(Coord xy)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_affiliations_closest_to()");
+  std::pair<AffiliationID, int> min_1 = {NO_AFFILIATION, INT_MAX};
+  std::pair<AffiliationID, int> min_2 = {NO_AFFILIATION, INT_MAX};
+  std::pair<AffiliationID, int> min_3 = {NO_AFFILIATION, INT_MAX};
+
+  for (const auto &it2 : affiliations_map)
+  {
+    Coord xy2 = it2.second.xy;
+    int dist_x = xy.x - xy2.x;
+    int dist_y = xy.y - xy2.y;
+    int dist = dist_x * dist_x + dist_y * dist_y;
+
+    if (dist < min_1.second)
+    {
+      min_3 = min_2;
+      min_2 = min_1;
+      min_1 = {it2.first, dist};
+    }
+    else if (dist < min_2.second)
+    {
+      min_3 = min_2;
+      min_2 = {it2.first, dist};
+    }
+    else if (dist < min_3.second)
+    {
+      min_3 = {it2.first, dist};
+    }
+  }
+
+  std::vector<AffiliationID> closest_affs;
+  closest_affs.reserve(3);
+  if (min_1.first != NO_AFFILIATION)
+    closest_affs.push_back(min_1.first);
+  if (min_2.first != NO_AFFILIATION)
+    closest_affs.push_back(min_2.first);
+  if (min_3.first != NO_AFFILIATION)
+    closest_affs.push_back(min_3.first);
+  closest_affs.shrink_to_fit();
+
+  return closest_affs;
 }
 
 bool Datastructures::remove_affiliation(AffiliationID /*id*/)
@@ -371,10 +409,30 @@ bool Datastructures::remove_affiliation(AffiliationID /*id*/)
   throw NotImplemented("remove_affiliation()");
 }
 
-PublicationID Datastructures::get_closest_common_parent(PublicationID /*id1*/, PublicationID /*id2*/)
+PublicationID Datastructures::get_closest_common_parent(PublicationID id1, PublicationID id2)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_closest_common_parent()");
+  auto it1 = publications_map.find(id1);
+  auto it2 = publications_map.find(id2);
+  if (it1 != publications_map.end() && it2 != publications_map.end())
+  {
+    std::unordered_set<PublicationID> parents_chain_id1;
+    while (it1->second.parent_id != NO_PUBLICATION)
+    {
+      PublicationID parent_id1 = it1->second.parent_id;
+      parents_chain_id1.insert(parent_id1);
+      it1 = publications_map.find(parent_id1);
+    }
+    while (it2->second.parent_id != NO_PUBLICATION) {
+      PublicationID parent_id2 = it2->second.parent_id;
+      auto it_parent = parents_chain_id1.find(parent_id2);
+      if (it_parent != parents_chain_id1.end()) {
+        return *it_parent;
+      }
+      it2 = publications_map.find(parent_id2);
+    }
+    parents_chain_id1.clear();
+  }
+  return NO_PUBLICATION;
 }
 
 bool Datastructures::remove_publication(PublicationID /*publicationid*/)
