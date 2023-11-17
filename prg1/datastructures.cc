@@ -406,24 +406,30 @@ std::vector<AffiliationID> Datastructures::get_affiliations_closest_to(Coord xy)
 bool Datastructures::remove_affiliation(AffiliationID id)
 {
   auto it = affiliations_map.find(id);
-  if (it == affiliations_map.end()) return false;
+  if (it == affiliations_map.end())
+    return false;
 
-  Name name_to_delete= it->second.name;
+  Name name_to_delete = it->second.name;
   auto it_name = affiliations_map_sorted_name.find(name_to_delete);
   it_name->second.erase(id);
-  if (it_name->second.size() == 0) affiliations_map_sorted_name.erase(it_name);
+  if (it_name->second.size() == 0)
+    affiliations_map_sorted_name.erase(it_name);
 
   Coord coord_to_delete = it->second.xy;
   auto it_coord = affiliations_map_sorted_coord.find(coord_to_delete);
   affiliations_map_sorted_coord.erase(it_coord);
 
   std::vector<PublicationID> publication_to_deattach = it->second.publications;
-  for (const PublicationID &id_pub : publication_to_deattach) {
+  for (const PublicationID &id_pub : publication_to_deattach)
+  {
     auto it_pub = publications_map.find(id_pub);
     std::vector<AffiliationID> affiliations_vect = it_pub->second.affiliations;
     auto it_aff_to_del = std::find(affiliations_vect.begin(), affiliations_vect.end(), id);
     affiliations_vect.erase(it_aff_to_del);
     affiliations_vect.shrink_to_fit();
+    it_pub->second.affiliations.clear();
+    it_pub->second.affiliations = affiliations_vect;
+    it_pub->second.affiliations.shrink_to_fit();
   }
 
   affiliations_name_sorted = false;
@@ -446,10 +452,12 @@ PublicationID Datastructures::get_closest_common_parent(PublicationID id1, Publi
       parents_chain_id1.insert(parent_id1);
       it1 = publications_map.find(parent_id1);
     }
-    while (it2->second.parent_id != NO_PUBLICATION) {
+    while (it2->second.parent_id != NO_PUBLICATION)
+    {
       PublicationID parent_id2 = it2->second.parent_id;
       auto it_parent = parents_chain_id1.find(parent_id2);
-      if (it_parent != parents_chain_id1.end()) {
+      if (it_parent != parents_chain_id1.end())
+      {
         return *it_parent;
       }
       it2 = publications_map.find(parent_id2);
@@ -459,8 +467,46 @@ PublicationID Datastructures::get_closest_common_parent(PublicationID id1, Publi
   return NO_PUBLICATION;
 }
 
-bool Datastructures::remove_publication(PublicationID /*publicationid*/)
+bool Datastructures::remove_publication(PublicationID publicationid)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("remove_publication()");
+  auto it = publications_map.find(publicationid);
+  if (it == publications_map.end())
+    return false;
+
+  PublicationID parent_id = it->second.parent_id;
+  if (parent_id != NO_PUBLICATION)
+  {
+    auto it_parent = publications_map.find(parent_id);
+    std::vector<PublicationID> children_vect = it_parent->second.children_ids;
+    auto it_pub_to_del = std::find(children_vect.begin(), children_vect.end(), publicationid);
+    children_vect.erase(it_pub_to_del);
+    children_vect.shrink_to_fit();
+    it_parent->second.children_ids.clear();
+    it_parent->second.children_ids = children_vect;
+    it_parent->second.children_ids.shrink_to_fit();
+  }
+
+  std::vector<PublicationID> children = it->second.children_ids;
+  for (const PublicationID &child_id : children)
+  {
+    auto it_child = publications_map.find(child_id);
+    it_child->second.parent_id = NO_PUBLICATION;
+  }
+
+  std::vector<AffiliationID> aff_to_deattach = it->second.affiliations;
+  for (const AffiliationID &id_aff : aff_to_deattach)
+  {
+    auto it_aff = affiliations_map.find(id_aff);
+    std::vector<PublicationID> publications_vect = it_aff->second.publications;
+    auto it_pub_to_del = std::find(publications_vect.begin(), publications_vect.end(), publicationid);
+    publications_vect.erase(it_pub_to_del);
+    publications_vect.shrink_to_fit();
+    it_aff->second.publications.clear();
+    it_aff->second.publications = publications_vect;
+    it_aff->second.publications.shrink_to_fit();
+  }
+
+  publications_map.erase(it);
+
+  return true;
 }
