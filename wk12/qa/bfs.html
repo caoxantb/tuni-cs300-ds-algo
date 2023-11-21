@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      canvas {
+        border: 1px solid #000;
+      }
+    </style>
+    <title>BFS</title>
+  </head>
+  <body>
+    <canvas id="mazeCanvas"></canvas>
+    <script src="js/base.js"></script>
+    <script>
+/**
+function BFS(graph, start):
+create an empty queue Q
+create an empty set visited
+mark start as visited
+add start into Q
+
+while Q is not empty:
+    current = remove from Q
+
+    for each neighbor in neighbors of current:
+        if neighbor is not in visited:
+          neighbor.pi = current
+          mark neighbor as visited
+          add neighbor into Q
+*/
+      async function BFS(start, end) {
+        const queue = []
+        const visited = new Set()
+        const cameFrom = {}
+        queue.push(start)
+        drawNode(start)
+
+        while (queue.length > 0) {
+          const current = queue.shift()
+          if (visited.has(current.toString())) continue;
+          drawNode(current)
+          visited.add(current.toString())
+
+          for (const neighbor of NEIGHBOURS) {
+            const next = [current[0] + neighbor[0], current[1] + neighbor[1]]
+            if (
+              isValid(next, maze) &&
+              isWhite(next, maze) &&
+              !visited.has(next.toString())
+            ) {
+              queue.push(next)
+              cameFrom[next.toString()] = current
+            }
+          }
+          // Introduce a delay of, for example, r0 milliseconds
+          await delay(50)
+        }
+
+        return cameFrom
+      }
+
+      (async () => {
+        drawMaze()
+        const cameFrom = await BFS(startNode, endNode)
+        drawPath(cameFrom)
+      })()
+    </script>
+  </body>
+</html>
