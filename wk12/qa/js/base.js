@@ -28,23 +28,11 @@ const PATH_COLOR = '#ff0'
 const EMPTY_COLOR = 'white'
 const GRID_LINE_COLOR = '#fff'
 
-const objectifyForPQ = (node) => ({ distance: dist(node), node });
+const objectifyForPQ = node => ({ distance: dist(node), node })
 
-const objectifyForAStar = (node) => ({ distance: total_dist(node), node });
+const objectifyForAStar = node => ({ distance: total_dist(node), node })
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-const handleClick = (event) => {
-  const { mouseX, mouseY } = getMouseCoordinates(event);
-  const { row, col } = calculateRowAndCol(mouseX, mouseY, cellSize);
-
-  if (maze[row][col] === 0) {
-    startNode = !startNode ? [row, col] : (!endNode ? [row, col] : startNode);
-    if (endNode) findPathBFS(startNode, endNode);
-  }
-
-  drawMaze();
-};
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 function drawPath (tmp) {
   ctx.fillStyle = PATH_COLOR
@@ -65,24 +53,9 @@ const dist = point => (point != undefined ? point[0] + point[1] : 0)
 const dist2 = point => point[0] * point[0] + point[1] * point[1]
 
 // const total_dist = (point, end) => dist2(point) + dist2([end[0]-point[0], end[1]-point[1]]);
+// only "heuristics" left
 const total_dist = point =>
   dist2([endNode[0] - point[0], endNode[1] - point[1]])
-
-canvas.addEventListener('click', handleClick)
-
-const updateCameFrom = (cameFrom, next, current_item) => {
-  try {
-    if (!cameFrom.has(next.toString())) {
-      cameFrom.set(next, current_item.node)
-      return
-    }
-
-    const ex_pi = cameFrom.get(next.toString())
-    if (dist(ex_pi) > current_item.distance) {
-      cameFrom.set(next.toString(), current_item.node)
-    }
-  } catch (exp) {}
-}
 
 function generateMaze (rows, cols) {
   let maze = []
@@ -128,33 +101,21 @@ function drawMaze () {
   }
 }
 
-const getMouseCoordinates = (event) => ({
-  mouseX: event.clientX - canvas.getBoundingClientRect().left,
-  mouseY: event.clientY - canvas.getBoundingClientRect().top
-});
-
-const calculateRowAndCol = (mouseX, mouseY, cellSize) => ({
-  row: Math.floor(mouseY / cellSize),
-  col: Math.floor(mouseX / cellSize)
-});
-
-const isValid = (start, maze) => (
+const isValid = (start, maze) =>
   start[0] >= 0 &&
   start[1] >= 0 &&
   start[0] < maze.length &&
   start[1] < maze[0].length
-);
 
-const isWhite = (node, maze) => maze[node[0]][node[1]] === 0;
+const isWhite = (node, maze) => maze[node[0]][node[1]] === 0
 
 const drawNode = (node, color = '#0f0') => {
-  ctx.fillStyle = color;
-  ctx.fillRect(node[1] * cellSize, node[0] * cellSize, cellSize, cellSize);
-};
+  ctx.fillStyle = color
+  ctx.fillRect(node[1] * cellSize, node[0] * cellSize, cellSize, cellSize)
+}
 
-const nodify = (strNode) => {
-  if (strNode == undefined) return undefined;
-  const splits = strNode.split(',');
-  return [parseInt(splits[0]), parseInt(splits[1])];
-};
-
+const nodify = strNode => {
+  if (strNode == undefined) return undefined
+  const splits = strNode.split(',')
+  return [parseInt(splits[0]), parseInt(splits[1])]
+}
