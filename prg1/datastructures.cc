@@ -49,6 +49,8 @@ void Datastructures::clear_all()
   affiliations_map.clear();
   publications_map.clear();
 
+  affiliations_id.clear();
+
   affiliations_map_sorted_name.clear();
   affiliations_id_sorted_name.clear();
   affiliations_id_sorted_name.shrink_to_fit();
@@ -60,24 +62,17 @@ void Datastructures::clear_all()
 
 std::vector<AffiliationID> Datastructures::get_all_affiliations()
 {
-  std::vector<AffiliationID> affiliation_ids;
-  affiliation_ids.reserve(affiliations_map.size());
-
-  for (const auto &affiliation : affiliations_map)
-  {
-    affiliation_ids.push_back(affiliation.first);
-  }
-  return affiliation_ids;
+  return affiliations_id;
 }
 
 bool Datastructures::add_affiliation(AffiliationID id, const Name &name, Coord xy)
 {
-  // std::unordered_map<std::string,double>::const_iterator
   auto it = affiliations_map.find(id);
 
   if (it == affiliations_map.end())
   {
     affiliations_map.insert({id, {id, name, xy, {}}});
+    affiliations_id.push_back(id);
     auto it_name = affiliations_map_sorted_name.find(name);
     if (it_name != affiliations_map_sorted_name.end())
     {
@@ -414,6 +409,8 @@ bool Datastructures::remove_affiliation(AffiliationID id)
   it_name->second.erase(id);
   if (it_name->second.size() == 0)
     affiliations_map_sorted_name.erase(it_name);
+
+  affiliations_id.erase(std::remove(affiliations_id.begin(), affiliations_id.end(), id), affiliations_id.end());
 
   Coord coord_to_delete = it->second.xy;
   auto it_coord = affiliations_map_sorted_coord.find(coord_to_delete);
