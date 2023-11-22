@@ -250,6 +250,7 @@ private:
     };
     std::unordered_map<AffiliationID, Affiliation> affiliations_map;
     std::unordered_map<PublicationID, Publication> publications_map;
+    std::vector<AffiliationID> affiliations_id;
     std::map<Name, std::set<AffiliationID>> affiliations_map_sorted_name;
     std::vector<AffiliationID> affiliations_id_sorted_name;
     std::map<Coord, AffiliationID> affiliations_map_sorted_coord;
