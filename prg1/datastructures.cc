@@ -153,6 +153,7 @@ bool Datastructures::change_affiliation_coord(AffiliationID id, Coord newcoord)
   affiliations_map_sorted_coord.erase(it->second.xy);
   affiliations_map_sorted_coord[newcoord] = id;
   affiliations_coord_sorted = false;
+  affiliations_id_sorted_coord.clear();
 
   it->second.xy = newcoord;
 
