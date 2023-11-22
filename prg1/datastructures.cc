@@ -85,6 +85,9 @@ bool Datastructures::add_affiliation(AffiliationID id, const Name &name, Coord x
     affiliations_map_sorted_coord.insert({xy, id});
     affiliations_name_sorted = false;
     affiliations_coord_sorted = false;
+    affiliations_id_sorted_name.clear();
+    affiliations_id_sorted_coord.clear();
+
     return true;
   }
   return false;
@@ -107,13 +110,10 @@ std::vector<AffiliationID> Datastructures::get_affiliations_alphabetically()
   if (!affiliations_name_sorted)
   {
     affiliations_id_sorted_name.clear();
-    affiliations_id_sorted_name.reserve(affiliations_map.size());
     for (const auto &aff : affiliations_map_sorted_name)
     {
-      for (const auto &id : aff.second)
-      {
-        affiliations_id_sorted_name.push_back(id);
-      }
+      affiliations_id_sorted_name.insert(
+          affiliations_id_sorted_name.end(), aff.second.begin(), aff.second.end());
     }
     affiliations_name_sorted = true;
   }
@@ -125,7 +125,6 @@ std::vector<AffiliationID> Datastructures::get_affiliations_distance_increasing(
 {
   if (!affiliations_coord_sorted)
   {
-    affiliations_id_sorted_coord.clear();
     affiliations_id_sorted_coord.reserve(affiliations_map.size());
     for (const auto &aff : affiliations_map_sorted_coord)
     {
@@ -431,6 +430,8 @@ bool Datastructures::remove_affiliation(AffiliationID id)
 
   affiliations_name_sorted = false;
   affiliations_coord_sorted = false;
+  affiliations_id_sorted_name.clear();
+  affiliations_id_sorted_coord.clear();
   affiliations_map.erase(it);
 
   return true;
