@@ -1,22 +1,16 @@
-// Datastructures.hh
-//
-// Student name:
-// Student email:
-// Student number:
-
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
 
 #include <string>
 #include <vector>
+#include <map>
+#include <set>
+#include <unordered_set>
 #include <tuple>
 #include <utility>
 #include <limits>
 #include <functional>
 #include <exception>
-#include <map>
-#include <set>
-#include <unordered_set>
 
 // Types for IDs
 using AffiliationID = std::string;
@@ -65,9 +59,9 @@ struct CoordHash
 // as key for std::map/set
 inline bool operator<(Coord c1, Coord c2)
 {
-    double dist_a_sq = (c1.x * c1.x) + (c1.y * c1.y);
-    double dist_b_sq = (c2.x * c2.x) + (c2.y * c2.y);
-    return dist_a_sq == dist_b_sq ? c1.y < c2.y : dist_a_sq < dist_b_sq;
+    if (c1.y < c2.y) { return true; }
+    else if (c2.y < c1.y) { return false; }
+    else { return c1.x < c2.x; }
 }
 
 // Return value for cases where coordinates were not found
@@ -92,171 +86,160 @@ private:
     std::string msg_;
 };
 
+struct Affiliation
+{
+    AffiliationID affiliation_id;
+    std::string affiliation_name;
+    Coord location;
+    std::vector<PublicationID> publications;
+
+    Affiliation(AffiliationID i, const std::string& n, Coord l, std::vector<PublicationID> p) :
+        affiliation_id(i), affiliation_name(n), location(l), publications(p) {}
+};
+
+struct Publication
+{
+    PublicationID publication_id;
+    std::string title;
+    int publication_year;
+    std::vector<AffiliationID> affiliations;
+    std::vector<PublicationID> references;
+    PublicationID referenced_by;
+
+    Publication(PublicationID i, const std::string t, int y, std::vector<AffiliationID> a, std::vector<PublicationID> r, PublicationID rb) :
+        publication_id(i), title(t), publication_year(y), affiliations(a), references(r), referenced_by(rb) {}
+};
+
 // This is the class you are supposed to implement
 
 class Datastructures
 {
+private:
+    std::unordered_map<AffiliationID, Affiliation> affiliations;
+    std::unordered_map<PublicationID, Publication> publications;
+
 public:
     Datastructures();
     ~Datastructures();
 
     // Estimate of performance: O(1)
-    // Short rationale for estimate: std::vector::size is constant
+    // Short rationale for estimate: Constant time complexity because it returns the size of the affiliations map
     unsigned int get_affiliation_count();
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: std::vector::clear is linear 
+    // Short rationale for estimate: Linear time complexity because it clears both the affiliations and publications maps.
     void clear_all();
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: std::vector::push_back is constant once
-    // reserved adequate memories and called n times
+    // Short rationale for estimate: Linear time complexity, where n is the number of affiliations.
     std::vector<AffiliationID> get_all_affiliations();
 
-    // Estimate of performance: O(log(n))
-    // Short rationale for estimate: std::map::find and insert are logarithmic
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     bool add_affiliation(AffiliationID id, Name const& name, Coord xy);
 
-    // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::find is constant but
-    // in hash collision case then it would be linear
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     Name get_affiliation_name(AffiliationID id);
 
-    // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     Coord get_affiliation_coord(AffiliationID id);
 
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance: O(n)
-    // Short rationale for estimate: std::vector::push_back is constant once
-    // reserved adequate memories and called n times running a for loop of n through a map
+    // Estimate of performance: O(n logn)
+    // Short rationale for estimate: Sorting has a time complexity of O(n logn), where n is the number of affiliations.
     std::vector<AffiliationID> get_affiliations_alphabetically();
 
-    // Estimate of performance: O(n)
-    // Short rationale for estimate: std::vector::push_back is constant once
-    // reserved adequate memories and called n times running a for loop of n through a map
+    // Estimate of performance: O(n logn)
+    // Short rationale for estimate: Sorting has a time complexity of O(n logn), where n is the number of affiliations.
     std::vector<AffiliationID> get_affiliations_distance_increasing();
 
-    // Estimate of performance: O(log(n))
-    // Short rationale for estimate: std::map::find are logarithmic
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Linear time complexity, where n is the number of affiliations.
     AffiliationID find_affiliation_with_coord(Coord xy);
 
-    // Estimate of performance: O(log(n))
-    // Short rationale for estimate: std::map::find are logarithmic
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations
     bool change_affiliation_coord(AffiliationID id, Coord newcoord);
 
 
     // We recommend you implement the operations below only after implementing the ones above
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::insert is constant but
-    // in hash collision case then it would be linear
+    // Short rationale for estimate: Linear time complexity for map operations.
     bool add_publication(PublicationID id, Name const& name, Year year, const std::vector<AffiliationID> & affiliations);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: std::vector::push_back is constant once
-    // reserved adequate memories and called n times
+    // Short rationale for estimate: Linear time complexity
     std::vector<PublicationID> all_publications();
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     Name get_publication_name(PublicationID id);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     Year get_publication_year(PublicationID id);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::find is constant but
-    // in hash collision case then it would be linear
+    // Short rationale for estimate: Linear time complexity for map operations.
     std::vector<AffiliationID> get_affiliations(PublicationID id);
 
-    // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::find is constant but
-    // in hash collision case then it would be linear
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     bool add_reference(PublicationID id, PublicationID parentid);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::find is constant but
-    // in hash collision case then it would be linear
+    // Short rationale for estimate: Linear time complexity for map operations.
     std::vector<PublicationID> get_direct_references(PublicationID id);
 
-    // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::find is constant but
-    // in hash collision case then it would be linear
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     bool add_affiliation_to_publication(AffiliationID affiliationid, PublicationID publicationid);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: std::unordered_map::find is constant but
-    // in hash collision case then it would be linear
+    // Short rationale for estimate: Linear time complexity for map operations.
     std::vector<PublicationID> get_publications(AffiliationID id);
 
-    // Estimate of performance: O(1)
-    // Short rationale for estimate: std::unordered_map::find is constant
+    // Estimate of performance: O(logn)
+    // Short rationale for estimate: Logarithmic time complexity for map operations.
     PublicationID get_parent(PublicationID id);
 
-    // Estimate of performance: O(nlog(n))
-    // Short rationale for estimate: std::map::find and insert are logarithmic 
-    // and run n times, therefore linearithmic
+    // Estimate of performance: O(n logn)
+    // Short rationale for estimate: The loop over publications has a time complexity of O(n), and sorting has a time complexity of O(n logn).
     std::vector<std::pair<Year, PublicationID>> get_publications_after(AffiliationID affiliationid, Year year);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: while loop until finding the root node is linear at worst
+    // Short rationale for estimate: Linear time complexity.
     std::vector<PublicationID> get_referenced_by_chain(PublicationID id);
 
 
     // Non-compulsory operations
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n²)
+    // Short rationale for estimate: The function involves iterations through all references.
     std::vector<PublicationID> get_all_references(PublicationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n logn)
+    // Short rationale for estimate: The function involves sorting affiliations based on distance.
     std::vector<AffiliationID> get_affiliations_closest_to(Coord xy);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n²)
+    // Short rationale for estimate: Quadratic time complexity.
     bool remove_affiliation(AffiliationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n²)
+    // Short rationale for estimate: Quadratic time complexity.
     PublicationID get_closest_common_parent(PublicationID id1, PublicationID id2);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n²)
+    // Short rationale for estimate: Quadratic time complexity.
     bool remove_publication(PublicationID publicationid);
 
-    // Helper functions
-    void postorder_traversal(PublicationID root_id, std::vector<PublicationID> &store, bool isOriginalRoot);
-
-
-private:
-    struct Affiliation {
-      AffiliationID id;
-      Name name;
-      Coord xy;
-      std::vector<PublicationID> publications;
-    };
-    struct Publication {
-      PublicationID id;
-      Name name;
-      Year year;
-      std::vector<AffiliationID> affiliations;
-      PublicationID parent_id;
-      std::vector<PublicationID> children_ids;
-    };
-    std::unordered_map<AffiliationID, Affiliation> affiliations_map;
-    std::unordered_map<PublicationID, Publication> publications_map;
-    std::vector<AffiliationID> affiliations_id;
-    std::map<Name, std::set<AffiliationID>> affiliations_map_sorted_name;
-    std::vector<AffiliationID> affiliations_id_sorted_name;
-    std::map<Coord, AffiliationID> affiliations_map_sorted_coord;
-    std::vector<AffiliationID> affiliations_id_sorted_coord;
-    bool affiliations_name_sorted = true;
-    bool affiliations_coord_sorted = true;
 };
 
 #endif // DATASTRUCTURES_HH
+
