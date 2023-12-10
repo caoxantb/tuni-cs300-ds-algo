@@ -117,6 +117,9 @@ class Datastructures
 private:
     std::unordered_map<AffiliationID, Affiliation> affiliations;
     std::unordered_map<PublicationID, Publication> publications;
+    std::map<Name, std::set<AffiliationID>> affiliations_map_sorted_name;
+    std::vector<AffiliationID> affiliations_id_sorted_name;
+    bool affiliations_name_sorted = true; 
 
 public:
     Datastructures();
