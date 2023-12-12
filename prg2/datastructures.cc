@@ -680,7 +680,6 @@ std::vector<AffiliationID> Datastructures::dfs(AffiliationID source, Affiliation
     }
   }
 
-  path_nodes_set.erase(source);
   path_nodes.pop_back();
 
   return {};
