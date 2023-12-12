@@ -9,6 +9,7 @@
 #include <random>
 
 #include <cmath>
+#include <climits>
 
 std::minstd_rand rand_engine; // Reasonably quick pseudo-random generator
 
@@ -214,10 +215,10 @@ bool Datastructures::add_publication(PublicationID id, const Name &name, Year ye
           }
         }
       }
-      return true;
     }
-    return false;
+    return true;
   }
+  return false;
 }
 
 std::vector<PublicationID> Datastructures::all_publications()
