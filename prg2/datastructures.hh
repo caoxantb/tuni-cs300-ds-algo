@@ -233,16 +233,16 @@ public:
 
   // PRG 2 functions:
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: Iterate through unordered_map of adjacent affiliations
   std::vector<Connection> get_connected_affiliations(AffiliationID id);
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n^2)
+  // Short rationale for estimate: Iterate through all adjacents of all affiliations
   std::vector<Connection> get_all_connections();
 
-  // Estimate of performance:
-  // Short rationale for estimate:
+  // Estimate of performance: O(n)
+  // Short rationale for estimate: depth first search is linear
   Path get_any_path(AffiliationID source, AffiliationID target);
 
   // PRG2 optional functions
