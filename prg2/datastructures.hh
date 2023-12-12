@@ -241,8 +241,8 @@ public:
   // Short rationale for estimate: Iterate through all adjacents of all affiliations
   std::vector<Connection> get_all_connections();
 
-  // Estimate of performance: O(n)
-  // Short rationale for estimate: depth first search is linear
+  // Estimate of performance: O(n^2)
+  // Short rationale for estimate: depth first search through all possible path is quadratic
   Path get_any_path(AffiliationID source, AffiliationID target);
 
   // PRG2 optional functions
