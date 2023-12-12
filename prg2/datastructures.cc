@@ -685,10 +685,59 @@ std::vector<AffiliationID> Datastructures::dfs(AffiliationID source, Affiliation
   return {};
 }
 
-Path Datastructures::get_path_with_least_affiliations(AffiliationID /*source*/, AffiliationID /*target*/)
+Path Datastructures::get_path_with_least_affiliations(AffiliationID source, AffiliationID target)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_path_with_least_affiliations()");
+  Path path;
+  std::unordered_map<AffiliationID, AffiliationID> visited;
+  std::queue<AffiliationID> queue;
+  std::deque<AffiliationID> path_deque;
+
+  auto it_source = affiliations_map.find(source);
+  if (it_source != affiliations_map.end())
+  {
+    visited.insert({source, NO_AFFILIATION});
+    queue.push(source);
+    while (!queue.empty())
+    {
+      AffiliationID queue_front = queue.front();
+      queue.pop();
+      auto it_queue_front = affiliations_map.find(queue_front);
+      for (const auto &aff : it_queue_front->second.connected_affiliations)
+      {
+        if (visited.find(aff.first) == visited.end())
+        {
+          queue.push(aff.first);
+          visited.insert({aff.first, queue_front});
+        }
+      }
+    }
+    auto it_target = visited.find(target);
+    if (it_target == visited.end())
+    {
+      return {};
+    }
+    path_deque.push_front(target);
+    AffiliationID prenode = it_target->second;
+    while (prenode != NO_AFFILIATION)
+    {
+      path_deque.push_front(prenode);
+      auto it_prenode = visited.find(prenode);
+      prenode = it_prenode->second;
+    }
+    if (path_deque.size() > 1)
+    {
+      for (auto it = path_deque.begin(); it + 1 != path_deque.end(); ++it)
+      {
+        AffiliationID first = *it;
+        AffiliationID second = *(it + 1);
+        auto it_aff = affiliations_map.find(first);
+        auto it_connection = it_aff->second.connected_affiliations.find(second);
+        path.push_back({first, second, it_connection->second});
+      }
+      return path;
+    }
+  }
+  return {};
 }
 
 Path Datastructures::get_path_of_least_friction(AffiliationID /*source*/, AffiliationID /*target*/)

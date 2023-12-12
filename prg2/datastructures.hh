@@ -17,6 +17,9 @@
 #include <map>
 #include <set>
 #include <unordered_set>
+#include <queue>
+#include <deque>
+
 
 // Types for IDs
 using AffiliationID = std::string;
