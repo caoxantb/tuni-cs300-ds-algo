@@ -630,7 +630,9 @@ std::vector<Connection> Datastructures::get_all_connections()
 
 Path Datastructures::get_any_path(AffiliationID source, AffiliationID target)
 {
-  std::vector<AffiliationID> path_vector = dfs(source, target, {}, {});
+  std::vector<AffiliationID> path_nodes;
+  std::unordered_set<AffiliationID> path_nodes_set;
+  std::vector<AffiliationID> path_vector = dfs(source, target, path_nodes, path_nodes_set);
   Path path;
   path.reserve(path_vector.size());
 
@@ -650,7 +652,7 @@ Path Datastructures::get_any_path(AffiliationID source, AffiliationID target)
   return {};
 }
 
-std::vector<AffiliationID> Datastructures::dfs(AffiliationID source, AffiliationID target, std::vector<AffiliationID> path_nodes, std::unordered_set<AffiliationID> path_nodes_set)
+std::vector<AffiliationID> Datastructures::dfs(AffiliationID source, AffiliationID target, std::vector<AffiliationID> &path_nodes, std::unordered_set<AffiliationID> &path_nodes_set)
 {
   path_nodes.push_back(source);
   path_nodes_set.insert(source);
@@ -677,6 +679,9 @@ std::vector<AffiliationID> Datastructures::dfs(AffiliationID source, Affiliation
         return new_path_nodes;
     }
   }
+
+  path_nodes_set.erase(source);
+  path_nodes.pop_back();
 
   return {};
 }

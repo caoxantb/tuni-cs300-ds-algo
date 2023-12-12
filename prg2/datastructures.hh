@@ -261,7 +261,7 @@ public:
 
   // Helper functions
   void postorder_traversal(PublicationID root_id, std::vector<PublicationID> &store, bool isOriginalRoot);
-  std::vector<AffiliationID> dfs(AffiliationID source, AffiliationID target, std::vector<AffiliationID> path_nodes, std::unordered_set<AffiliationID> path_nodes_set);
+  std::vector<AffiliationID> dfs(AffiliationID source, AffiliationID target, std::vector<AffiliationID>& path_nodes, std::unordered_set<AffiliationID>& path_nodes_set);
 
 
 private:
