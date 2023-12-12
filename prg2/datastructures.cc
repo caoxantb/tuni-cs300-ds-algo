@@ -617,7 +617,6 @@ std::vector<Connection> Datastructures::get_connected_affiliations(AffiliationID
 std::vector<Connection> Datastructures::get_all_connections()
 {
   std::vector<Connection> connections;
-  connections.reserve(affiliations_map.size() * affiliations_map.size() / 2);
   for (const auto &aff : all_connections)
   {
     std::unordered_map<AffiliationID, Weight> connected_affs = aff.second;
@@ -626,7 +625,6 @@ std::vector<Connection> Datastructures::get_all_connections()
       connections.push_back({aff.first, aff2.first, aff2.second});
     }
   }
-  connections.shrink_to_fit();
   return connections;
 }
 
