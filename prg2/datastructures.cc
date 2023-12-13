@@ -746,8 +746,66 @@ Path Datastructures::get_path_of_least_friction(AffiliationID /*source*/, Affili
   throw NotImplemented("get_path_of_least_friction()");
 }
 
-PathWithDist Datastructures::get_shortest_path(AffiliationID /*source*/, AffiliationID /*target*/)
+PathWithDist Datastructures::get_shortest_path(AffiliationID source, AffiliationID target)
 {
-  // Replace the line below with your implementation
-  throw NotImplemented("get_shortest_path()");
+  PathWithDist pathWithDist;
+  std::unordered_map<AffiliationID, std::pair<AffiliationID, int>> visited;
+  std::queue<AffiliationID> queue;
+  std::deque<AffiliationID> path_deque;
+
+  auto it_source = affiliations_map.find(source);
+  if (it_source != affiliations_map.end())
+  {
+    queue.push(source);
+    visited.insert({source, {NO_AFFILIATION, 0}});
+    while (!queue.empty())
+    {
+      AffiliationID queue_front = queue.front();
+      queue.pop();
+      int dist_from_origin = visited.find(queue_front)->second.second;
+      auto it_queue_front = affiliations_map.find(queue_front);
+      for (const auto &aff : it_queue_front->second.connected_affiliations)
+      {
+          Affiliation start_node = it_queue_front->second;
+          Affiliation end_node = affiliations_map.find(aff.first)->second;
+          int distance = dist_from_origin + floor(sqrt(pow((start_node.xy.x - end_node.xy.x), 2) + pow((start_node.xy.y - end_node.xy.y), 2)));
+          auto it_adj = visited.find(aff.first);
+          if (it_adj == visited.end())
+          {
+            queue.push(aff.first);
+            visited.insert({aff.first, {queue_front, distance}});
+          } else if (it_adj->second.second > distance) {
+            it_adj->second.first = queue_front;
+            it_adj->second.second = distance;
+          }
+      }
+    }
+    auto it_target = visited.find(target);
+    if (it_target == visited.end())
+    {
+      return {};
+    }
+    path_deque.push_front(target);
+    AffiliationID prenode = it_target->second.first;
+    while (prenode != NO_AFFILIATION)
+    {
+      path_deque.push_front(prenode);
+      auto it_prenode = visited.find(prenode);
+      prenode = it_prenode->second.first;
+    }
+    if (path_deque.size() > 1) {
+      for (auto it = path_deque.begin(); it + 1 != path_deque.end(); ++it) {
+        AffiliationID first = *it;
+        AffiliationID second = *(it + 1);
+        auto it_aff = affiliations_map.find(first);
+        auto it_connection = it_aff->second.connected_affiliations.find(second);
+        int dist_to_first = visited.find(first)->second.second;
+        int dist_to_second = visited.find(second)->second.second;
+        Distance dist_between = dist_to_second - dist_to_first;
+        pathWithDist.push_back({{first, second, it_connection->second}, dist_between});
+      }
+      return pathWithDist;
+    }
+  }
+  return {};
 }
